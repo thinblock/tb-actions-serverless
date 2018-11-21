@@ -1,0 +1,19 @@
+{
+  "name": "transaction-serverless",
+  "version": "1.0.0",
+  "description": "Lambda function to sign transactions",
+  "author": "Abdullah Tariq",
+  "license": "MIT",
+  "dependencies": {
+    "await-to-js": "^2.0.1",
+    "aws-sdk": "^2.12.0",
+    "aws-sdk-mock": "^4.1.0",
+    "axios": "^0.18.0",
+    "ccxt": "^1.17.374",
+    "serverless-offline": "^3.8.3"
+  },
+  "devDependencies": {
+    "lambda-tester": "^3.5.0",
+    "chai": "^4.1.2"
+  }
+}
