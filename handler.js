@@ -3,8 +3,13 @@ const AWS = require('aws-sdk');
 const ccxt = require('ccxt');
 const axios = require('axios');
 
-module.exports.endpoint = async (event) => {
-  const params = JSON.parse(event.body);
+module.exports.transaction = async (event) => {
+  var jobId = event.Records[0].Sns.Message;
+
+  var jobURL = `http://jobs.service.thinblock.io/jobs/${jobId}?look_up=_id`;
+  const { data: { actions: [ action ] } } = await axios.get(jobURL);
+
+  const { params } = action;
 
   if (params.user_id === undefined || params.exchange === undefined ||
     params.symbol === undefined || params.side === undefined ||
@@ -24,7 +29,7 @@ module.exports.endpoint = async (event) => {
 
   try {
     // add URL
-    var url = `http://[::]:8080/api/pairs?user_id=${user}&exchange=${exchangeName}`;
+    var url = `http://pair.service.thinblock.io/api/pairs?user_id=${user}&exchange=${exchangeName}`;
     const { key, secret } = (await axios.get(url)).data;
 
     const exchangeId = exchangeName
@@ -41,9 +46,9 @@ module.exports.endpoint = async (event) => {
     price = exchange.priceToPrecision(symbol, price);
 
     if (side === 'buy') {
-      order = await exchange.createLimitBuyOrder(symbol, amount, price);
+      order = await exchange.createLimitBuyOrder(symbol, amount, price, { test: true });
     } else if (side === 'sell') {
-      order = await exchange.createLimitSellOrder(symbol, amount, price);
+      order = await exchange.createLimitSellOrder(symbol, amount, price, { test: true });
     } else {
       return {
         statusCode: 400,

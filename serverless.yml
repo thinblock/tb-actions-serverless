@@ -1,4 +1,4 @@
-service: serverless-simple-http-endpoint
+service: transaction-serverless
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -8,11 +8,10 @@ plugins:
 provider:
   name: aws
   runtime: nodejs8.10
+  region: ap-southeast-1
 
 functions:
   transaction:
-    handler: handler.endpoint
+    handler: handler.transaction
     events:
-      - http:
-          path: transaction
-          method: post
+      - sns: arn:aws:sns:ap-southeast-1:156969275739:create_transaction
