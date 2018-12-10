@@ -9,6 +9,11 @@ provider:
   name: aws
   runtime: nodejs8.10
   region: ap-southeast-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Resource: "*"
+      Action:
+        - "sns:*"
   environment:
     KEY_SERVICE_BASE_URL: 'http://pair.service.thinblock.io/'
     JOBS_SERVICE_BASE_URL: 'http://jobs.service.thinblock.io/'
