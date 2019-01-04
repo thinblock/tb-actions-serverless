@@ -1,0 +1,26 @@
+service: transaction-serverless
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: ap-southeast-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Resource: "*"
+      Action:
+        - "sns:*"
+  environment:
+    KEY_SERVICE_BASE_URL: 'http://pair.service.thinblock.io/'
+    JOBS_SERVICE_BASE_URL: 'http://jobs.service.thinblock.io/'
+    NOTIFY_TOPIC_ARN: 'arn:aws:sns:ap-southeast-1:156969275739:NOTIFY_CLIENT_APP'
+
+functions:
+  transaction:
+    handler: handler.transaction
+    events:
+      - sns: arn:aws:sns:ap-southeast-1:156969275739:create_transaction
