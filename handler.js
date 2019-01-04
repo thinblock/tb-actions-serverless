@@ -43,7 +43,10 @@ module.exports.transaction = async (event, context) => {
   if (actionIndex = -1) {
     // Couldn't find appropriate action in job
     result.event = null;
-    result.data = 'transaction_failed: Action not found in job';
+    result.data = {
+      status: 'failed',
+      error_message: 'transaction_failed: action not found in job'
+    }
     publishSNS(result);
     return;
   }
@@ -54,7 +57,10 @@ module.exports.transaction = async (event, context) => {
   if (params.user_id === undefined || params.exchange === undefined ||
     params.symbol === undefined || params.side === undefined ||
     params.amount === undefined || params.price === undefined) {
-    result.data = 'transaction_failed: Requires user_id, exchange, symbol, side, amount, price'
+    result.data = {
+      status: 'failed',
+      error_message: 'transaction_failed: Requires user_id, exchange, symbol, side, amount, price'
+    }
     publishSNS(result);
     return;
   }
@@ -86,12 +92,21 @@ module.exports.transaction = async (event, context) => {
     } else if (side === 'sell') {
       order = await exchange.createLimitSellOrder(symbol, amount, price, { test: true });
     } else {
-      result.data = 'transaction_failed: Side should be "buy" or "sell"';
+      result.data = {
+        status: 'failed',
+        error_message: 'transaction_failed: side should be "buy" or "sell"'
+      }
       publishSNS(result);
       return;
     }
 
-    result.data = 'transaction_completed: Success';
+    result.data = {
+      status: 'success',
+      message: 'transaction_completed: success - please verify order',
+      data: {
+        order: order
+      }
+    }
     publishSNS(result);
     return;
   } catch (e) {
